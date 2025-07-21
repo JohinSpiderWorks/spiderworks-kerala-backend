@@ -1,0 +1,258 @@
+<%- include('../wrapper/header') %>
+
+<!-- Sidebar -->
+<%- include('../components/sidenav') %>
+
+<!-- Responsive Sidebar Button -->
+<div class="md:hidden p-4">
+  <button id="menu-btn" class="text-blue-900 focus:outline-none">
+    <svg
+      id="hamburger-icon"
+      class="w-6 h-6 sm:w-8 sm:h-8"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M4 6h16M4 12h16M4 18h16"
+      ></path>
+    </svg>
+    <svg
+      id="close-icon"
+      class="w-6 h-6 sm:w-8 sm:h-8 hidden"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"
+      ></path>
+    </svg>
+  </button>
+</div>
+
+<!-- Main Content (Table) -->
+<div class="flex-1 md:ml-40 p-8">
+  <div class="overflow-x-auto">
+    <div class="flex justify-between my-5">
+      <h1 class="text-3xl font-bold"><%= title %></h1>
+      <div class="flex gap-5">
+        <a
+          href="/admin/career/create"
+          class="w-16 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-red-400 flex justify-center"
+        >
+          <img src="/addblog.png" class="h-6 w-6" alt="add" />
+        </a>
+      </div>
+    </div>
+    <table class="min-w-full bg-white border rounded-lg shadow-lg">
+      <thead class="bg-blue-100">
+        <tr>
+          <th class="py-2 px-4 text-left text-blue-900 min-w-[10rem]">Title</th>
+          <!--
+         
+          <th class="py-2 px-4 text-left text-blue-900 min-w-[200px]">
+            Description
+          </th>
+           -->
+          <th class="py-2 px-4 text-left text-blue-900 min-w-[5rem]">Salary</th>
+          <th class="py-2 px-4 text-left text-blue-900 min-w-[10rem]">
+            Active
+          </th>
+          <th class="py-2 px-4 text-left text-blue-900 min-w-[7rem]">
+            Last Date
+          </th>
+          <th class="py-2 px-4 text-left text-blue-900 min-w-[7rem]">
+            Expiry Date
+          </th>
+          <th class="py-2 px-4 text-left text-blue-900 min-w-[20rem]">
+            Action
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (data.length > 0) { %> <% for (let i = 0; i < data.length; i++) {
+        %>
+        <tr class="border border-gray-200">
+          <td class="py-2 px-4 text-blue-900 border border-gray-200 w-72">
+            <a href="" class="text-ellipsis">
+              <%= data[i].dataValues.title %>
+            </a>
+          </td>
+
+          <% if (data[i].dataValues.salary) { %>
+          <td class="py-2 px-4 text-blue-900 w-64 border border-gray-200">
+            ₹<%= data[i].dataValues.salary %>
+          </td>
+          <% }else{ %>
+          <td class="py-2 px-4 text-blue-900 w-64 border border-gray-200">
+            <img src="/close.png" alt="cross icon" class="h-10 w-10" />
+          </td>
+          <% } %>
+
+          <td class="py-2 px-4 text-blue-900 border border-gray-200">
+            <a
+              href="/admin/career?id=<%= data[i].dataValues.id %>&active=<%= data[i].dataValues.active %>"
+              id="published-btn"
+              class="inline-flex items-center px-3 py-1 text-sm font-medium text-white <%= data[i].dataValues.active ? 'bg-green-500' : 'bg-red-500' %> rounded"
+              data-id="<%= data[i].dataValues.active %>"
+              data-publish="<%= data[i].dataValues.active %>"
+            >
+              <%= data[i].dataValues.active ? 'Active' : 'In Active' %>
+            </a>
+          </td>
+
+          <td class="py-2 px-4 text-blue-900 border border-gray-200">
+            <div class="text-ellipsis overflow-hidden">
+              <%= data[i].dataValues.last_date %>
+            </div>
+          </td>
+          <td class="py-2 px-4 text-blue-900 border border-gray-200">
+            <div class="text-ellipsis overflow-hidden">
+              <%= data[i].dataValues.expiry_date %>
+            </div>
+          </td>
+          <td class="py-2 px-4 space-x-2 border border-gray-200">
+            <div class="flex justify-center gap-x-5 max-xl:w-52">
+              <a
+                href="/admin/career/<%= data[i].dataValues.id %>"
+                class="bg-blue-500 p-2 rounded hover:text-blue-800"
+              >
+                <img src="/edit.svg" class="w-7 h-7" alt="edit icon" />
+              </a>
+
+              <a
+                href="javascript:void(0);"
+                data-id="<%= data[i].dataValues.id %>"
+                data-title="<%= data[i].dataValues.title%>"
+                class="bg-red-500 p-2 rounded text-red-600 hover:text-red-800 delete-link"
+              >
+                <img src="/delete.svg" class="w-7 h-7" alt="delete icon" />
+              </a>
+            </div>
+          </td>
+        </tr>
+        <% } %> <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Delete Confirmation Popup -->
+<div
+  id="delete-confirmation"
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden"
+>
+  <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+    <h2 class="text-xl font-semibold mb-4">Are you sure?</h2>
+    <p class="text-gray-600 mb-6">
+      Do you really want to delete the Job Post:
+      <span class="font-bold" id="blog-title">Career</span> ?
+    </p>
+    <div class="flex justify-end gap-4">
+      <button
+        id="cancel-delete"
+        class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+      >
+        Cancel
+      </button>
+      <button
+        id="confirm-delete"
+        class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Change copy of blog -->
+<div
+  id="change-title-modal"
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden"
+>
+  <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+    <h2 class="text-xl font-semibold mb-4">Copy Blog</h2>
+    <p class="text-gray-600 mb-4">Enter The New Title:</p>
+    <input
+      type="text"
+      id="new-blog-title"
+      required
+      minlength="10"
+      class="w-full px-4 py-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="New Blog Title"
+    />
+    <p class="text-red-600 mb-4" id="titleError"></p>
+    <div class="flex justify-end gap-4">
+      <button
+        id="cancel-change-title"
+        class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+      >
+        Cancel
+      </button>
+      <button
+        id="confirm-change-title"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Delete Confirmation Popup Logic
+  const deleteLinks = document.querySelectorAll(".delete-link");
+  const confirmationPopup = document.getElementById("delete-confirmation");
+  const confirmDeleteBtn = document.getElementById("confirm-delete");
+  const cancelDeleteBtn = document.getElementById("cancel-delete");
+  let deleteUrl = "";
+  let blog = "";
+
+  deleteLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      deleteUrl = link.getAttribute("data-id");
+      blog = link.getAttribute("data-title");
+      console.log(deleteUrl);
+      document.getElementById("blog-title").innerText = blog;
+      confirmationPopup.classList.remove("hidden");
+
+      console.log("yes");
+    });
+  });
+
+  confirmDeleteBtn.addEventListener("click", () => {
+    if (deleteUrl) {
+      window.location.href = `/admin/career/${deleteUrl}/delete`;
+    }
+  });
+
+  cancelDeleteBtn.addEventListener("click", () => {
+    confirmationPopup.classList.add("hidden");
+  });
+</script>
+
+<script>
+  document.getElementById("filter").addEventListener("click", () => {
+    const isPublished = document.getElementById("check-published").checked;
+    const isPremium = document.getElementById("check-premium").checked;
+
+    window.location.href = `/admin/dashboard/blogs?published=${isPublished}&premium=${isPremium}`;
+  });
+
+  document.getElementById("clear-filter").addEventListener("click", () => {
+    window.location.href = "/admin/dashboard/blogs";
+  });
+</script>
+
+<!-- Include Footer -->
+<%- include('../wrapper/footer') %>

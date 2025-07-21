@@ -1,0 +1,126 @@
+<%- include('wrapper/header') %>
+<div class="flex items-center justify-center min-h-screen">
+  <div
+    class="w-full max-w-md p-6"
+    data-aos="zoom-in"
+    data-aos-duration="2000"
+    data-aos-delay="500"
+  >
+    <form id="signupForm" class="bg-[#ffffff] rounded-lg shadow-lg p-8">
+      <div class="flex justify-center mb-2">
+        <img src="/profile.png" alt="User Icon" class="h-28 w-28" />
+      </div>
+      <div class="mb-4">
+        <label for="email" class="block text-lg font-medium mb-2">Name</label>
+        <div class="relative">
+          <input
+            type="text"
+            id="name"
+            placeholder="Enter Your Name"
+            required
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <img
+            src="/user.png"
+            class="absolute right-2 top-3 h-5 w-5"
+            alt="user"
+          />
+        </div>
+      </div>
+      <div class="mb-4">
+        <label for="email" class="block text-lg font-medium mb-2">Email</label>
+        <div class="relative">
+          <input
+            type="email"
+            id="email"
+            required
+            placeholder="Enter Your Email"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <img
+            src="/mail.png"
+            class="absolute right-2 top-3 h-5 w-5"
+            alt="mail"
+          />
+        </div>
+
+        <small id="emailError" class="text-red-500 mt-2 hidden"
+          >* Wrong Email</small
+        >
+      </div>
+      <div class="mb-6">
+        <label for="password" class="block text-lg font-medium mb-2"
+          >Password</label
+        >
+        <div class="relative">
+          <input
+            type="password"
+            id="password"
+            required
+            placeholder="Enter Your Password"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <img
+            src="/lock.png"
+            class="absolute right-1 top-3 h-5 w-5"
+            alt="lock"
+          />
+        </div>
+        <small id="passwordError" class="text-red-500 mt-2 hidden"
+          >* Wrong Password</small
+        >
+      </div>
+      <button
+        type="submit"
+        class="w-36 py-2 bg-[#3294de] text-md hover:bg-gray-600 rounded-lg font-semibold text-white"
+      >
+        Create Account
+      </button>
+    </form>
+  </div>
+</div>
+<script>
+  // JavaScript to handle error display
+  document
+    .getElementById("signupForm")
+    .addEventListener("submit", async function (event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      console.log(window.location);
+      const sendData = await fetch(`${window.location.origin}/admin/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const response = await sendData.json();
+
+      console.log(response);
+
+      if (response?.type == "email") {
+        document.getElementById("emailError").innerText = `* ${response.err}`;
+        document.getElementById("emailError").classList.remove("hidden");
+        return;
+      } else if (response?.type == "password") {
+        document.getElementById(
+          "passwordError"
+        ).innerText = `* ${response.err}`;
+        document.getElementById("passwordError").classList.remove("hidden");
+        return;
+      }
+      if (response?.err) {
+        document.getElementById(
+          "passwordError"
+        ).innerText = `* ${response.err}`;
+        document.getElementById("passwordError").classList.remove("hidden");
+        return;
+      }
+      window.location.href = response?.user?.redirect;
+   
+    });
+</script>
+<%- include('wrapper/footer') %>

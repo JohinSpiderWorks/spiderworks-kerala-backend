@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Blog</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/index.css" />
+    <link rel="stylesheet" href="/createblog.css" />
+    <link rel="stylesheet" href="/styles/sidenav.css">
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <%- include('../components/sidenav') %>
+
+      <main>
+        <button id="toggle-button">
+          <svg
+            id="hamburger-icon"
+            style="
+              width: 1.5rem;
+              height: 1.5rem;
+              min-width: 10px;
+              min-height: 10px;
+            "
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            ></path>
+          </svg>
+          <svg
+            id="close-icon"
+            style="
+              width: 1.5rem;
+              height: 1.5rem;
+              min-width: 640px;
+              min-height: 640px;
+              display: none;
+            "
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+        <div class="main-title" style="display: flex">
+          <h1><%= title %></h1>
+        </div>
+        <form action="" class="form-container">
+          <div class="form-group">
+            <label for="title" class="form-label">Title</label>
+            <input
+              type="text"
+              name="title"
+              id="title"
+              class="form-input"
+              required
+              placeholder="Enter title"
+            />
+            <small id="titleError"> * Title </small>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: flex-start;
+              align-items: center;
+              gap: 3rem;
+              padding-bottom: 2rem;
+            "
+          >
+            <div>
+              <label for="title" class="form-label">Last Date to Apply</label>
+              <input type="date" id="last-date" class="styled-date-input" />
+            </div>
+            <div>
+              <label for="expiry-date" class="form-label">Expiry Date</label>
+              <input type="date" id="expiry-date" class="styled-date-input" />
+              <label
+                for="expiry-date"
+                id="expiry-date-error"
+                style="display: none"
+                >Expiry Date</label
+              >
+            </div>
+            <div>
+              <label for="expiry-date" class="form-label">Salary</label>
+              <input
+                type="text"
+                placeholder="₹ Enter Salary"
+                id="salary"
+                class="styled-date-input"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="title" class="form-label">Company Name</label>
+            <input
+              type="text"
+              name="title"
+              id="company_name"
+              class="form-input"
+              required
+              placeholder="Enter Company"
+            />
+            <small id="titleError"> * Title </small>
+          </div>
+
+          <div class="form-group">
+            <label for="shortdescription" class="form-label"
+              >Job Description</label
+            >
+            <textarea
+              id="description"
+              class="form-textarea"
+              required
+              placeholder="Job Description"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="top-description" class="form-label"
+              >Responsibilities (Optional)</label
+            >
+            <textarea
+              id="responsibilities"
+              required
+              class="form-textarea top_description_summernote"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="bottom-description" class="form-label"
+              >Requirements (Optional)</label
+            >
+            <textarea
+              id="requirements"
+              required
+              class="form-textarea bottom_description_summernote"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="bottom-description" class="form-label"
+              >Benefits (Optional)</label
+            >
+            <textarea
+              id="benefits"
+              required
+              class="form-textarea bottom_description_summernote"
+            ></textarea>
+          </div>
+          <div class="form-action">
+            <div style="display: flex; align-items: center; gap: 10px">
+              <input type="checkbox" id="active" class="styled-checkbox" />
+              <label for="title" style="font-weight: 600; color: #4a5568"
+                >Active</label
+              >
+            </div>
+            <button type="button" id="submitbtn" class="form-button">
+              Create
+            </button>
+          </div>
+          <div id="alertMessage" class="alert-message" style="display: none">
+            Job Created Successfully
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="delete-confirmation-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Are you sure?</h2>
+        <p>Do you really want to delete this section?</p>
+        <div class="modal-actions">
+          <button id="cancel-delete" class="btn-cancel">Cancel</button>
+          <button id="confirm-delete" class="btn-delete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script src="/javascript/career/createjob.js"></script>
+  </body>
+</html>

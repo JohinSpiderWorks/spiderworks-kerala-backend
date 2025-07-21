@@ -1,0 +1,591 @@
+<%- include('wrapper/header') %>
+
+  <!-- Sidebar -->
+  <%- include('components/sidenav') %>
+
+    <!-- Responsive Sidebar Button -->
+    <div class="md:hidden p-4">
+      <button id="menu-btn" class="text-blue-900 focus:outline-none">
+        <svg id="hamburger-icon" class="w-6 h-6 sm:w-8 sm:h-8" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+        <svg id="close-icon" class="w-6 h-6 sm:w-8 sm:h-8 hidden" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Main Content (Table) -->
+    <div class="flex-1 md:ml-40 p-8">
+      <div class="overflow-x-auto">
+        <div class="flex justify-between my-5">
+          <h1 class="text-3xl font-bold">
+            <%= title %>
+          </h1>
+          <div class="flex gap-5">
+            <label class="flex items-center space-x-2 bg-blue-100 text-blue-800 px-2 py-1 rounded">
+              <input id="check-published" type="checkbox" <%=query?.publish=='true' ? 'checked' : '' %>
+              class="form-checkbox h-5 w-5
+              text-blue-600" />
+              <span class="font-semibold">Published</span>
+            </label>
+
+            <!-- Checkbox 2 -->
+            <label class="flex items-center space-x-2 bg-blue-100 text-blue-800 px-2 py-1 rounded">
+              <input id="check-premium" type="checkbox" <%=query?.premium=='true' ? 'checked' : '' %>
+              class="form-checkbox h-5 w-5 text-blue-600" />
+              <span class="font-semibold">Premium</span>
+            </label>
+            <button id="filter" class="bg-blue-500 text-white px-3 py-1 rounded flex gap-2 items-center">
+              <img src="/filter.png" class="h-5 w-5" alt="filter" /><span class="font-semibold">Filter</span>
+            </button>
+            <button id="clear-filter" class="bg-red-100 text-red-800 px-3 py-1 rounded flex gap-1 items-center">
+              <img src="/close.png" class="h-5 w-5" alt="close" /><span class="font-semibold">Clear</span>
+            </button>
+
+            <a href="/admin/dashboard/blogs/create"
+              class="w-16 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-red-400 flex justify-center">
+              <img src="/addblog.png" class="h-6 w-6" alt="add" />
+            </a>
+          </div>
+        </div>
+        <table class="min-w-full bg-white border rounded-lg shadow-lg">
+          <thead class="bg-blue-100">
+            <tr>
+              <th
+                class="py-2 px-4 text-left text-blue-900 min-w-[220px] sm:min-w-[150px] md:min-w-[100px] lg:min-w-[50px] xl:min-w-[20px]">
+                Picture
+              </th>
+              <th
+                class="py-2 px-4 text-left text-blue-900 min-w-[150px] sm:min-w-[100px] md:min-w-[50px] lg:min-w-[20px] xl:min-w-[20px]">
+                Title
+              </th>
+              <th
+                class="py-2 px-4 text-left text-blue-900 min-w-[100px] sm:min-w-[50px] md:min-w-[20px] lg:min-w-[20px] xl:min-w-[20px]">
+                Type
+              </th>
+              <th
+                class="py-2 px-4 text-left text-blue-900 min-w-[50px] sm:min-w-[20px] md:min-w-[20px] lg:min-w-[20px] xl:min-w-[20px]">
+                Category
+              </th>
+              <th
+                class="py-2 px-4 text-left text-blue-900 min-w-[20px] sm:min-w-[20px] md:min-w-[20px] lg:min-w-[20px] xl:min-w-[20px]">
+                Published
+              </th>
+              <th
+                class="py-2 px-4 text-left text-blue-900 min-w-[20px] sm:min-w-[20px] md:min-w-[20px] lg:min-w-[20px] xl:min-w-[20px]">
+                Premium
+              </th>
+              <th class="py-2 px-4 space-x-2 border border-gray-200">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (data.length> 0) { %> <% for (let i=0; i < data.length; i++) { %>
+                <tr class="border border-gray-200">
+                  <td class="py-2 px-4 w-24 border border-gray-200 max-w-72">
+                    <div class="flex">
+                      <img src="<%= data[i]?.dataValues?.banner?.dataValues?.path %>"
+                        alt="<%= data[i]?.dataValues?.banner?.dataValues?.originalname %>"
+                        class="min-h-46 min-w-46 object-cover rounded" />
+                    </div>
+                  </td>
+                  <td class="py-2 px-4 text-blue-900 border border-gray-200 w-72">
+                    <a href="https://swblogs.vercel.app/blogs/<%= data[i].dataValues.id %>" target="_blank"
+                      class="text-ellipsis">
+                      <%= data[i].dataValues.title?.slice(0, 180) %>...
+                    </a>
+                  </td>
+                  <td class="py-2 px-4 text-blue-900 border border-gray-200">
+                    <div class="text-ellipsis overflow-hidden">
+                      <a href="/admin/dashboard/blogs/update/<%= data[i].dataValues.id %>?type=<%= data[i].dataValues.type%>"
+                        id="type-btn"
+                        class="inline-flex items-center px-3 py-1 cursor-pointer text-sm font-medium text-white rounded"
+                        data-id="<%= data[i].dataValues.id %>" data-type="<%= data[i].dataValues.type%>">
+                        <span
+                          class="px-3 py-1 rounded <%= data[i].dataValues.type === 'featured' ? 'bg-emerald-500' : data[i].dataValues.type === 'banner' ? 'bg-indigo-500' : data[i].dataValues.type === 'standard' ? 'bg-pink-500' : 'bg-black' %>">
+                          <%= data[i].dataValues.type.charAt(0).toUpperCase() + data[i].dataValues.type.slice(1) %>
+                        </span>
+                      </a>
+                    </div>
+                  </td>
+                  <td class="py-2 px-4 text-blue-900 border border-gray-200 w-5">
+                    <div class="text-ellipsis overflow-hidden">
+                      <button
+                        class="flex gap-x-2 items-center px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded show-categories-btn"
+                        data-id="<%=data[i].dataValues.id %>">
+                        <img src="/show.svg" class="h-5 w-5" alt="show" />
+                      </button>
+                    </div>
+                  </td>
+                  <td class="py-2 px-4 text-blue-900 border border-gray-200">
+                    <div class="text-ellipsis overflow-hidden">
+                      <a href="/admin/dashboard/blogs/update/<%= data[i].dataValues.id %>?publish=<%= data[i].dataValues.is_published%>"
+                        id="published-btn"
+                        class="inline-flex items-center px-3 py-1 text-sm font-medium text-white <%= data[i].dataValues.is_published ? 'bg-green-500' : 'bg-red-500' %> rounded"
+                        data-id="<%= data[i].dataValues.id %>" data-publish="<%= data[i].dataValues.is_published%>">
+                        <%= data[i].dataValues.is_published ? 'Published' : 'Unpublished' %>
+                      </a>
+                    </div>
+                  </td>
+                  <td class="py-2 px-4 text-blue-900 border border-gray-200">
+                    <div class="text-ellipsis overflow-hidden">
+                      <a href="/admin/dashboard/blogs/update/<%= data[i].dataValues.id %>?premium=<%= data[i].dataValues.premium%>"
+                        id="premium-btn" data-premium="<%= data[i].dataValues.premium%>"
+                        class="inline-flex items-center px-3 py-1 text-sm font-medium text-white rounded <%= data[i].dataValues.premium ? 'bg-yellow-500' : 'bg-gray-500' %>">
+                        <%= data[i].dataValues.premium ? 'Premium' : 'Standard' %>
+                      </a>
+                    </div>
+                  </td>
+                  <td class="py-2 px-4 space-x-2 border border-gray-200">
+                    <div class="flex justify-start gap-x-5 max-xl:w-52">
+                      <button class="duplicate-btn bg-[#333333] p-2 rounded hover:text-blue-800"
+                        data-title="<%= data[i].dataValues.title%>" data-id="<%= data[i].dataValues.id%>">
+                        <img src="/duplicate.svg" class="w-10 h-10 max-w-7 max-h-7" alt="duplicate icon" />
+                      </button>
+                      <a href="/admin/dashboard/blog/<%= data[i].dataValues.id%>/comments"
+                        class="bg-[#f5f5f5] p-2 rounded relative hover:text-blue-800"
+                        data-title="<%= data[i].dataValues.title%>" data-id="<%= data[i].dataValues.id%>">
+                        <img src="/comment.svg" class="w-10 h-10 max-w-7 max-h-7" alt="comment icon" />
+                        <!-- Badge for comment count -->
+                        <span
+                          class="absolute top-0 right-0 bg-red-600 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                          <%= data[i].dataValues.comments?.length %>
+                        </span>
+                      </a>
+
+                      <a href="/admin/dashboard/blogs/update/<%= data[i].dataValues.id %>"
+                        class="bg-blue-500 p-2 rounded hover:text-blue-800">
+                        <img src="/edit.svg" class="w-10 h-10 max-w-7 max-h-7" alt="edit icon" />
+                      </a>
+
+                      <% if(!data[i].dataValues.is_published) {%>
+                        <a href="javascript:void(0);" data-id="<%= data[i].dataValues.id %>"
+                          data-title="<%= data[i].dataValues.title%>"
+                          class="bg-red-500 p-2 rounded text-red-600 hover:text-red-800 delete-link">
+                          <img src="/delete.svg" class="w-10 h-10 max-w-7 max-h-7" alt="delete icon" />
+                        </a>
+                        <% } %>
+                    </div>
+                  </td>
+                </tr>
+                <% } %>
+                  <% } %>
+          </tbody>
+        </table>
+        <div class="flex justify-between my-4">
+          <a href="/admin/dashboard/blogs?page=<%= parseInt(query.page) - 1 %>"
+            class="bg-blue-500 text-white px-4 py-2 rounded <%= parseInt(query.page) <= 1 ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' %>"
+            <%=parseInt(query.page) <=1 ? 'tabindex="-1"' : '' %>>Previous</a>
+          <a href="/admin/dashboard/blogs?page=<%= parseInt(query.page) + 1 %>"
+            class="bg-blue-500 text-white px-4 py-2 rounded <%= parseInt(query.page) >= parseInt(query.totalPages) ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' %>"
+            <%=parseInt(query.page)>= parseInt(query.totalPages) ? 'tabindex="-1"' : '' %>>Next</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Popup -->
+    <div id="delete-confirmation"
+      class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-semibold mb-4">Are you sure?</h2>
+        <p class="text-gray-600 mb-6">
+          Do you really want to delete the blog:
+          <span class="font-bold" id="blog-title">blog</span> ?
+        </p>
+        <div class="flex justify-end gap-4">
+          <button id="cancel-delete" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">
+            Cancel
+          </button>
+          <button id="confirm-delete" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change copy of blog -->
+    <div id="change-title-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center hidden">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-semibold mb-4">Copy Blog</h2>
+        <p class="text-gray-600 mb-4">Enter The New Title:</p>
+        <input type="text" id="new-blog-title" required minlength="10"
+          class="w-full px-4 py-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="New Blog Title" />
+        <p class="text-red-600 mb-4" id="titleError"></p>
+        <div class="flex justify-end gap-4">
+          <button id="cancel-change-title" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">
+            Cancel
+          </button>
+          <button id="confirm-change-title" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Type of blog -->
+    <div id="change-type-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center hidden flex">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-96 mx-auto">
+        <h2 class="text-xl font-semibold mb-4 text-center">Change Type</h2>
+        <p class="text-gray-600 mb-4 text-center">Select the new type:</p>
+        <select id="new-type"
+          class="w-full px-4 py-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mx-auto">
+          <option value="featured">Featured</option>
+          <option value="banner">Banner</option>
+          <option value="standard">Standard</option>
+          <option value="none">None</option>
+        </select>
+        <div class="flex justify-center gap-4">
+          <button id="cancel-change-type" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">
+            Cancel
+          </button>
+          <button id="confirm-change-type" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="category-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center hidden">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-[40rem] mx-auto relative">
+        <h2 class="text-xl font-semibold mb-4 text-center">Categories</h2>
+        <div id="category-chips" class="flex flex-wrap gap-2 mb-4"></div>
+        <div class="flex gap-2 mb-4">
+          <input type="text" id="new-category"
+            class="flex-grow px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="New category" oninput="getSuggestions(this.value)" />
+          <div id="suggestions-list" class="cursor-pointer absolute bg-white shadow-md p-2 rounded-md hidden"></div>
+
+        </div>
+        <div class="absolute top-0 right-0">
+          <button id="close-category-modal"
+            class="text-gray-800 px-4 py-2 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400">
+            <img src="/close.png" class="h-7 w-7" alt="close icon" />
+          </button>
+        </div>
+        <button id="save-categories"
+          class="text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-gray-400">
+          Save
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const categories = <%= JSON.stringify(categories) %>; // Properly rendered categories
+
+      // Function to get suggestions based on user input
+      function getSuggestions(value) {
+        const suggestionsList = document.getElementById('suggestions-list');
+        // Filter categories based on the user's input (case-insensitive)
+        const filteredCategories = categories.filter(category =>
+          category.name.toLowerCase().includes(value.toLowerCase())
+        );
+
+        // Clear previous suggestions
+        suggestionsList.innerHTML = '';
+
+        // If there are matching categories, render them
+        if (filteredCategories.length > 0 && value.trim() !== '') {
+          filteredCategories.forEach(category => {
+            const suggestion = document.createElement('div');
+            suggestion.textContent = category.name;
+            suggestion.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-100');
+
+            // Add category to the list when a suggestion is clicked
+            suggestion.onclick = () => {
+              addCategory({ id: category.id, name: category.name });
+              suggestionsList.classList.add('hidden');  // Hide suggestions after selection
+              document.getElementById('new-category').value = '';  // Clear input after selection
+            };
+            suggestionsList.appendChild(suggestion);
+          });
+          suggestionsList.classList.remove('hidden');
+        } else {
+          // Hide suggestions if no match is found
+          suggestionsList.classList.add('hidden');
+        }
+      }
+    </script>
+
+
+
+
+    <script>
+      const changeTitleModal = document.getElementById("change-title-modal");
+      const newTitle = document.getElementById("new-blog-title");
+      const duplicateBtns = document.querySelectorAll(".duplicate-btn");
+      const titleError = document.getElementById("titleError");
+      const cancelDuplicateBtn = document.getElementById("cancel-change-title");
+      const saveDuplicateBtn = document.getElementById("confirm-change-title");
+
+      let currentId = null; // Initialize a variable to store the current ID
+
+      duplicateBtns.forEach((duplicateBtn) => {
+        duplicateBtn.addEventListener("click", () => {
+          titleError.innerText = "";
+          const currentTitle = duplicateBtn.getAttribute("data-title");
+          currentId = duplicateBtn.getAttribute("data-id"); // Update the current ID
+
+          newTitle.value = `Copy of ${currentTitle}`;
+          changeTitleModal.classList.remove("hidden");
+          changeTitleModal.classList.add("flex");
+        });
+      });
+
+      saveDuplicateBtn.addEventListener("click", async () => {
+        if (newTitle.value.length < 10 || newTitle.value.length > 100) {
+          titleError.innerText = "Title must be between 10 and 100 characters";
+          return;
+        } else if (!currentId) {
+          titleError.innerText =
+            "No blog ID found. Please select a blog to duplicate.";
+          return;
+        }
+
+        changeTitleModal.classList.add("hidden");
+        changeTitleModal.classList.remove("flex");
+        window.location.href = `${window.location.origin
+          }/admin/dashboard/blogs/duplicate/${currentId}?title=${encodeURIComponent(
+            newTitle.value
+          )}`;
+      });
+    </script>
+    <script>
+      // Delete Confirmation Popup Logic
+      const deleteLinks = document.querySelectorAll(".delete-link");
+      const confirmationPopup = document.getElementById("delete-confirmation");
+      const confirmDeleteBtn = document.getElementById("confirm-delete");
+      const cancelDeleteBtn = document.getElementById("cancel-delete");
+      let deleteUrl = "";
+      let blog = "";
+
+      deleteLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          deleteUrl = link.getAttribute("data-id");
+          blog = link.getAttribute("data-title");
+          console.log(deleteUrl);
+          document.getElementById("blog-title").innerText = blog;
+          confirmationPopup.classList.remove("hidden");
+
+          console.log("yes");
+        });
+      });
+
+      confirmDeleteBtn.addEventListener("click", () => {
+        if (deleteUrl) {
+          window.location.href = `/admin/dashboard/blogs/delete/${deleteUrl}`;
+        }
+      });
+
+      cancelDeleteBtn.addEventListener("click", () => {
+        confirmationPopup.classList.add("hidden");
+      });
+
+      cancelDuplicateBtn.addEventListener("click", () => {
+        changeTitleModal.classList.add("hidden");
+      });
+    </script>
+    <script>
+      // Change Type Popup Logic
+      const typeBtns = document.querySelectorAll("#type-btn");
+      const changeTypeModal = document.getElementById("change-type-modal");
+      const newType = document.getElementById("new-type");
+      const cancelChangeTypeBtn = document.getElementById("cancel-change-type");
+      const confirmChangeTypeBtn = document.getElementById("confirm-change-type");
+
+      let currentTypeId = null;
+
+      typeBtns.forEach((typeBtn) => {
+        typeBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          currentTypeId = typeBtn.getAttribute("data-id");
+          changeTypeModal.classList.remove("hidden");
+        });
+      });
+
+      confirmChangeTypeBtn.addEventListener("click", async () => {
+        if (currentTypeId) {
+          const selectedType = newType.value;
+          try {
+            const response = await fetch(
+              `/admin/dashboard/blogs/update/${currentTypeId}?type=${selectedType}`
+            );
+            if (response.ok) {
+              window.location.reload();
+            } else {
+              console.error("Failed to update type");
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      });
+
+      cancelChangeTypeBtn.addEventListener("click", () => {
+        changeTypeModal.classList.add("hidden");
+      });
+    </script>
+    <script>
+      // Category Modal Logic
+      const categoryModal = document.getElementById("category-modal");
+      const categoryChips = document.getElementById("category-chips");
+      const newCategoryInput = document.getElementById("new-category");
+      const addCategoryBtn = document.getElementById("add-category");
+      const closeCategoryModalBtn = document.getElementById("close-category-modal");
+      const showCategoryBtns = document.querySelectorAll(".show-categories-btn");
+
+      let currentCategories = [];
+      let blogid;
+
+      // Fetch categories for the specific blog
+      async function fetchBlogCategories(blogId) {
+        const response = await fetch(`/admin/category/blog/${blogId}`);
+        if (response.ok) {
+          const data = await response.json();
+          currentCategories = data.blog_categories;
+          blogid = blogId;
+          console.log(data);
+          renderCategoryChips();
+        }
+      }
+
+      // Fetch all categories for autocomplete
+      async function fetchAllCategories() {
+        const response = await fetch("/admin/category");
+        return response.ok ? await response.json() : [];
+      }
+
+      async function renderCategoryChips() {
+        categoryChips.innerHTML = "";
+        // Fetch categories from the server
+        const response = await fetch(`/admin/category/blog/${blogid}`);
+        if (response.ok) {
+          const data = await response.json();
+          currentCategories = data.data; // Update currentCategories with fetched data
+          console.log(data.data);
+          console.log("loop");
+        } else {
+          console.error("Failed to fetch categories from server");
+          return;
+        }
+
+        currentCategories?.forEach((blog) => {
+          blog.blog_categories.forEach((category) => {
+            const chip = document.createElement("div");
+            chip.className =
+              "bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center";
+            chip.innerHTML = `
+          <span>${category.name}</span>
+          <button class="ml-1 text-blue-600 hover:text-blue-800 focus:outline-none remove-category" data-category-id="${category.id}" data-category-name="${category.name}" data-blog-id="${blogid}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        `;
+            categoryChips.appendChild(chip);
+          });
+        });
+      }
+
+      async function addCategory(category) {
+        console.log({ category: category });
+        // Ensure currentCategories is defined and is an array
+        if (!Array.isArray(currentCategories)) {
+          console.error("currentCategories is not an array.");
+          currentCategories = []; // Re-initialize it
+        }
+
+        // Check if the category is not empty and does not already exist in the array
+        if (category && !currentCategories.some(cat => cat.name === category.name)) {
+          const categoryObj = { id: category.id, name: category.name }; // Use the real ID from the server
+
+          // Call API to create blogSpecificCategory
+          await fetch(`/admin/category/blog/${blogid}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ categoryId: category.id, categoryName: category.name, blogId: blogid })
+          }).catch(error => console.error("Error adding category:", error)); // Handle errors silently
+
+          currentCategories.push(categoryObj); // Add the new category to the currentCategories array
+          renderCategoryChips(); // Re-render the chips to reflect the new category
+        } else if (!category) {
+          console.log("Category cannot be empty."); // Optionally log a message
+        } else {
+          console.log("Category already exists."); // Optionally log a message
+        }
+
+        newCategoryInput.value = ""; // Clear the input after processing
+      }
+
+      async function removeCategory(categoryId) {
+        currentCategories = currentCategories.filter((cat) => cat.id !== categoryId);
+        // Immediately render the chip removal
+
+        // Call API to delete blogSpecificCategory
+        await fetch(`/admin/category/blog/${blogid}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ categoryId: categoryId, blogId: blogid })
+        }).catch(error => console.error("Error removing category:", error)); // Handle errors silently
+        renderCategoryChips();
+      }
+
+      showCategoryBtns?.forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const blogId = btn.getAttribute("data-id"); // Assuming the button has a data-id attribute for the blog ID
+          await fetchBlogCategories(blogId); // Fetch blog-specific categories
+          categoryModal.classList.remove("hidden");
+          categoryModal.classList.add("flex");
+        });
+      });
+
+      newCategoryInput.addEventListener("keypress", async (e) => {
+        console.log("yes");
+        if (e.key === "Enter") {
+          const allCategories = await fetchAllCategories();
+          console.log(allCategories);
+          const filteredCategories = allCategories.filter((category) =>
+            category.toLowerCase().includes(newCategoryInput.value.toLowerCase())
+          );
+          // Implement dropdown logic here to show filteredCategories
+          addCategory({ id: Date.now(), name: newCategoryInput.value.trim() }); // Assuming a new category is created with a unique ID
+        }
+      });
+
+      // Use event delegation for removing categories
+      categoryChips.addEventListener("click", (e) => {
+        if (e.target.closest(".remove-category")) {
+          const categoryId = e.target.closest(".remove-category").getAttribute("data-category-id");
+          removeCategory(categoryId);
+        }
+      });
+
+      closeCategoryModalBtn.addEventListener("click", () => {
+        categoryModal.classList.add("hidden");
+        categoryModal.classList.remove("flex");
+      });
+
+      const saveCategoriesBtn = document.getElementById("save-categories");
+
+      saveCategoriesBtn.addEventListener("click", async () => {
+        const selectedCategories = currentCategories; // Get the selected categories
+        console.log("Selected Categories:", selectedCategories); // Log the selected categories
+
+        window.location.reload();
+
+        // Optionally, you can add logic to save these categories to the server here
+      });
+
+    </script>
+
+    <%- include('wrapper/footer') %>

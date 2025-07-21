@@ -1,0 +1,226 @@
+<%- include('wrapper/header') %>
+  <div class="flex">
+    <%- include('components/sidenav') %>
+
+      <!-- Responsive Sidebar Button -->
+      <div class="md:hidden p-4">
+        <button id="menu-btn" class="text-blue-900 focus:outline-none">
+          <svg id="hamburger-icon" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+          <svg id="close-icon" class="w-8 h-8 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Main Content (Table) -->
+      <div class="flex-1 md:ml-40 p-8">
+        <div class="overflow-x-auto">
+          <div class="flex justify-between my-5">
+            <h1 class="text-3xl font-bold">
+              <%= title %>
+            </h1>
+            <div class="flex gap-5">
+              <select id="roleFilter"
+                class="w-40 bg-blue-100 text-blue-800 py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onchange="filterRoles()">
+                <option selected value="">Filter Roles</option>
+                <option value="all">All</option>
+                <option value="admin">Admin</option>
+                <option value="editor">Editor</option>
+                <option value="user">User</option>
+                <option value="member">Member</option>
+                <option value="author">Author</option>
+              </select>
+
+              <a href="/admin/dashboard/user/create"
+                class="w-16 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-red-400 flex justify-center">
+                <img src="/adduser.png" class="h-6 w-6" alt="add" />
+              </a>
+            </div>
+          </div>
+          <table class="min-w-full bg-white border rounded-lg shadow-lg">
+            <thead class="bg-blue-100">
+              <tr>
+                <th class="py-2 px-4 text-left text-blue-900 w-24">Profile</th>
+                <th class="py-2 px-4 text-left text-blue-900 w-32">Name</th>
+                <th class="py-2 px-4 text-left text-blue-900 w-48">Email</th>
+                <th class="py-2 px-4 text-left text-blue-900 w-48">Phone</th>
+                <th class="py-2 px-4 text-left text-blue-900 w-64">Bio</th>
+                <th class="py-2 px-4 text-left text-blue-900 w-32">Role</th>
+                <th class="py-2 px-4 text-left text-blue-900 w-32">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (data.length> 0) { %> <% for (let i=0; i < data.length; i++){ %>
+                  <tr class="border-b">
+                    <td class="py-2 px-4 w-24 border border-gray-200">
+                      <div class="flex items-center">
+                        <div class="h-10 w-10 bg-blue-500 rounded-full flex items-center justify-center text-white">
+                          <%= data[i].dataValues.name.split('')[0]?.toUpperCase() %>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="py-2 px-4 text-blue-900 w-32 border border-gray-200">
+                      <a href="/admin/user/<%= data[i].dataValues.id %>">
+                        <%= data[i].dataValues.name?.charAt(0).toUpperCase() + data[i].dataValues.name?.slice(1) %>
+                      </a>
+                    </td>
+                    <td class="py-2 px-4 text-blue-900 w-48 border border-gray-200">
+                      <%= data[i].dataValues.email %>
+                    </td>
+                    <% if (data[i].dataValues.phone) { %>
+                      <td class="py-2 px-4 text-blue-900 w-64 border border-gray-200">
+                        <%= data[i].dataValues.phone %>
+                      </td>
+                      <% } else { %>
+                        <td class="py-2 px-4 text-blue-900 w-64 border border-gray-200">
+                          <img src="/close.png" alt="cross icon" class="h-10 w-10" />
+                        </td>
+                        <% } %>
+                          <% if (data[i].dataValues.bio) { %>
+                            <td class="py-2 px-4 text-blue-900 w-64 border border-gray-200">
+                              <%= data[i].dataValues.bio?.charAt(0).toUpperCase() + data[i].dataValues.bio?.slice(1) %>
+                            </td>
+                            <% } else { %>
+                              <td class="py-2 px-4 text-blue-900 w-64 border border-gray-200">
+                                <img src="/close.png" alt="cross icon" class="h-10 w-10" />
+                              </td>
+                              <% } %>
+                                <td class="py-2 px-4 text-blue-900 w-32 border border-gray-200">
+                                  <%= data[i].dataValues.role?.charAt(0).toUpperCase() +
+                                    data[i].dataValues.role?.slice(1) %>
+                                </td>
+                                <td class="py-2 px-4 flex space-x-2 w-32 border border-gray-200 border-r-0">
+                                  <a href="/admin/dashboard/user/update/<%= data[i].dataValues.id %>"
+                                    class="bg-blue-500 p-2 rounded hover:text-blue-800">
+                                    <img src="/edit.svg" class="w-7 h-7" alt="edit icon" />
+                                  </a>
+                                  <a href="#" class="bg-red-500 p-2 rounded hover:text-blue-800 delete-link"
+                                    data-id="<%= data[i].dataValues.id %>" data-user="<%= data[i].dataValues.name %>"
+                                    data-role="<%= data[i].dataValues.role %>">
+                                    <img src="/delete.svg" class="w-7 h-7" alt="delete icon" />
+                                  </a>
+                                </td>
+                  </tr>
+                  <% } %>
+                    <% } %>
+            </tbody>
+          </table>
+          <div class="flex items-center justify-between gap-x-10 mt-4 space-x-1">
+            <a href="/admin/dashboard?role=<%= role %>&page=<%= page === 1 ? 1 : page - 1 %>&limit=<%= limit %>"
+              class="px-3 py-2 text-white bg-blue-600 border border-blue-300 rounded-md hover:bg-blue-500 <%= page === 1 ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' %>"
+              <%=page===1 ? 'tabindex="-1"' : '' %>
+              >
+              Previous
+            </a>
+
+            <a href="/admin/dashboard?role=<%= role %>&page=<%= page + 1 %>&limit=<%= limit %>"
+              class="px-3 py-2 text-white bg-blue-600 border border-blue-300 rounded-md hover:bg-blue-500 <%= page === lastPage ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' %>"
+              <%=page===lastPage ? 'tabindex="-1"' : '' %>
+              >
+              Next
+            </a>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <%- include('wrapper/footer') %>
+
+    <div id="delete-confirmation"
+      class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-semibold mb-4">Are you sure?</h2>
+        <p class="text-gray-600 mb-6">
+          Do you really want to delete
+          <span class="font-bold" id="username">John Doe</span> ?
+        </p>
+        <div class="flex justify-end gap-4">
+          <button id="cancel-delete" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">
+            Cancel
+          </button>
+          <button id="confirm-delete" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sidebar Toggle
+      const menuBtn = document.getElementById("menu-btn");
+      const sidebar = document.getElementById("sidebar");
+      const hamburgerIcon = document.getElementById("hamburger-icon");
+      const closeIcon = document.getElementById("close-icon");
+
+      menuBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        sidebar.classList.toggle("-translate-x-full");
+        hamburgerIcon.classList.toggle("hidden");
+        closeIcon.classList.toggle("hidden");
+      });
+
+      document.addEventListener("click", (event) => {
+        if (
+          !sidebar.contains(event.target) &&
+          !menuBtn.contains(event.target) &&
+          !sidebar.classList.contains("-translate-x-full")
+        ) {
+          sidebar.classList.add("-translate-x-full");
+          hamburgerIcon.classList.remove("hidden");
+          closeIcon.classList.add("hidden");
+        }
+      });
+
+      // Delete Confirmation Popup
+      document.addEventListener("DOMContentLoaded", () => {
+        const deleteLinks = document.querySelectorAll(".delete-link");
+        const confirmationPopup = document.getElementById("delete-confirmation");
+        const confirmButton = document.getElementById("confirm-delete");
+        const cancelButton = document.getElementById("cancel-delete");
+        let deleteUrl = "";
+        let username = "";
+        let role = "";
+
+        deleteLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            deleteUrl = link.getAttribute("data-id");
+            username = link.getAttribute("data-user");
+            role = link.getAttribute("data-role");
+            document.getElementById("username").innerText = `${username} (${role.charAt(0).toUpperCase() + role.slice(1)
+              })`;
+            confirmationPopup.classList.remove("hidden");
+          });
+        });
+
+        confirmButton.addEventListener("click", () => {
+          if (deleteUrl) {
+            window.location.href = `/admin/dashboard/user/delete/${deleteUrl}`;
+          }
+        });
+
+        cancelButton.addEventListener("click", () => {
+          confirmationPopup.classList.add("hidden");
+        });
+
+        confirmationPopup.addEventListener("click", (e) => {
+          if (e.target === confirmationPopup) {
+            confirmationPopup.classList.add("hidden");
+          }
+        });
+      });
+
+      async function filterRoles() {
+        const role = document.getElementById("roleFilter").value;
+        if (role !== "all") {
+          window.location.href = `${window.location.origin}/admin/dashboard?role=${role}`;
+        } else {
+          window.location.href = `${window.location.origin}/admin/dashboard`;
+        }
+      }
+    </script>
