@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles/sidenav.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-white text-gray-800">
+    <%- include('components/sidenav') %>
+
+    <!-- Responsive Sidebar Button -->
+    <div class="md:hidden p-4">
+      <button id="menu-btn" class="text-blue-900 focus:outline-none">
+        <svg
+          id="hamburger-icon"
+          class="w-6 h-6 sm:w-8 sm:h-8"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+        <svg
+          id="close-icon"
+          class="w-6 h-6 sm:w-8 sm:h-8 hidden"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <h1 class="text-center text-3xl font-bold my-5"><%= title %></h1>
+
+    <% if (data?.length == 0) { %>
+    <h1 class="text-center text-gray-400 text-xl font-semibold my-5">
+      No Comments
+    </h1>
+    <% }else{ %>
+
+    <div class="max-w-4xl mx-auto p-4">
+      <div class="space-y-4">
+        <% for (let i = 0; i < data.length; i++) { %>
+        <div
+          class="flex items-center justify-between p-4 bg-gray-100 rounded-lg shadow-md"
+        >
+        <div class="flex flex-start ">
+          <div class="flex items-center ">
+            <img
+              src="/user.png"
+              class="w-12 h-12 p-2 bg-gray-300 rounded-full"
+            />
+            <div class="ml-2">
+              <div class="text-sm text-gray-500 font-normal">
+                <%= data[i]?.dataValues?.user?.name %>
+              </div>
+            </div>
+          </div>
+          <div class="ml-4  overflow-x-hidden">
+            <div class="text-sm max-w-2xl  text-gray-500">
+              <%= data[i]?.dataValues?.comment %>
+            </div>
+          </div>
+        </div>
+          <div class="flex flex-col items-center justify-center">
+            <button
+              data-id="<%= data[i].dataValues?.id %>"
+              data-blogid="<%= data[i].dataValues?.blog_id %>"
+              data-title="<%= data[i].dataValues?.user?.name %>"
+              id="blog-id"
+              class="bg-red-500 p-1 justify-center rounded-full delete-comment-link"
+            >
+              <img src="/delete.svg" class="h-7 w-7" alt="Delete Comment" />
+            </button>
+
+            <span class="mt-2 text-xs text-gray-500"></span>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- Delete Confirmation Popup for Comments -->
+    <div
+      id="comment-delete-confirmation"
+      class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-semibold mb-4">Are you sure?</h2>
+        <p class="text-gray-600 mb-6">
+          Do you really want to delete the comment: Written by
+          <span class="font-bold" id="comment-title">comment</span> ?
+        </p>
+        <div class="flex justify-end gap-4">
+          <button
+            id="cancel-comment-delete"
+            class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirm-comment-delete"
+            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button
+      id="add-comment-btn"
+      class="fixed bottom-8 right-8 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none"
+    >
+      <img src="/plus.svg" class="h-10 w-10" alt="plus" />
+    </button>
+
+    <!-- Comment Input Popup -->
+    <div
+      id="comment-input-popup"
+      class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-semibold mb-4">Add Comment</h2>
+        <textarea
+          id="comment-input"
+          minlength="5"
+          class="w-full p-2 border border-gray-300 rounded-md mb-2"
+          placeholder="Write your comment here..."
+        ></textarea>
+        <p id="commenterr" class="text-red-500 hidden mb-2"></p>
+        <div class="flex justify-end gap-4">
+          <button
+            id="cancel-comment-input"
+            class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+          <button
+            id="submit-comment"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Delete Confirmation Popup Logic
+      const deleteCommentLinks = document.querySelectorAll(
+        ".delete-comment-link"
+      );
+      const confirmationCommentPopup = document.getElementById(
+        "comment-delete-confirmation"
+      );
+      const confirmCommentDeleteBtn = document.getElementById(
+        "confirm-comment-delete"
+      );
+      const cancelCommentDeleteBtn = document.getElementById(
+        "cancel-comment-delete"
+      );
+      let deleteCommentId = "";
+      let deleteBlogId = "";
+      let comment = "";
+
+      deleteCommentLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          deleteCommentId = link.getAttribute("data-id");
+          deleteBlogId = link.getAttribute("data-blogid");
+          comment = link.getAttribute("data-title");
+          document.getElementById("comment-title").innerText = comment;
+          confirmationCommentPopup.classList.remove("hidden");
+        });
+      });
+
+      confirmCommentDeleteBtn.addEventListener("click", () => {
+        if (deleteCommentId && deleteBlogId) {
+          window.location.href = `/admin/dashboard/blog/${deleteBlogId}/comments/${deleteCommentId}/delete`;
+        }
+      });
+
+      cancelCommentDeleteBtn.addEventListener("click", () => {
+        confirmationCommentPopup.classList.add("hidden");
+      });
+
+      // Show the comment input popup when the floating button is clicked
+      document
+        .getElementById("add-comment-btn")
+        .addEventListener("click", () => {
+          document
+            .getElementById("comment-input-popup")
+            .classList.remove("hidden");
+        });
+
+      // Hide the popup when the cancel button is clicked
+      document
+        .getElementById("cancel-comment-input")
+        .addEventListener("click", () => {
+          document
+            .getElementById("comment-input-popup")
+            .classList.add("hidden");
+        });
+        document.getElementById('commenterr').classList.add('hidden')
+      // Handle comment submission
+      document
+        .getElementById("submit-comment")
+        .addEventListener("click", async () => {
+          const comment = document.getElementById("comment-input").value.trim();
+          const id =
+            window.location.pathname.split("/")[
+              window.location.pathname.split("/").length - 2
+            ];
+
+          if (comment) {
+            // Handle the comment submission logic here
+            console.log("Comment submitted:", comment);
+
+            const response = await fetch(
+              `${window.location.origin}/admin/dashboard/blog/${id}/comments`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ comment }),
+              }
+            );
+            const result = await response.json();
+
+            if (response.ok) {
+              window.location.href = `${window.location.origin}/admin/dashboard/blog/${id}/comments`;
+              document
+                .getElementById("comment-input-popup")
+                .classList.add("hidden");
+              document.getElementById("comment-input").value = "";
+            }else{
+                if(result?.err){    
+                    document.getElementById('commenterr').classList.remove('hidden')
+                    document.getElementById('commenterr').innerText=`* ${result?.err}`
+                }
+            }
+
+            // Clear the input field
+          } else {
+            alert("Please enter a comment before submitting.");
+          }
+        });
+    </script>
+  </body>
+</html>

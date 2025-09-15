@@ -1,0 +1,27 @@
+<aside id="sidebar">
+  <div class="logo">
+    <img src="/logo.png" alt="logo" />
+  </div>
+  <nav>
+    <ul class="flex flex-col justify-center">
+      <li>
+        <a href="/admin/user/<%= data.id %>" class="nav-link">
+          <img src="/users.svg" alt="users" />
+          <span class="nav-text">Profile</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin/user/<%= data.id %>/blogs" class="nav-link">
+          <img src="/blogs.svg" alt="blogs" />
+          <span class="nav-text">Blogs</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin/user/<%= data.id %>/forums" class="nav-link">
+          <img src="/forum.svg" alt="forums" />
+          <span class="nav-text">Forum</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>

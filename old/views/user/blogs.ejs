@@ -1,0 +1,358 @@
+<%- include('../wrapper/header') %>
+<div class="flex">
+  <%- include('../components/sidenav') %>
+
+  <!-- Responsive Sidebar Button -->
+  <div class="md:hidden p-4">
+    <button id="menu-btn" class="text-blue-900 focus:outline-none">
+      <svg
+        id="hamburger-icon"
+        class="w-8 h-8"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        ></path>
+      </svg>
+      <svg
+        id="close-icon"
+        class="w-8 h-8 hidden"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Main Content (Tabs) -->
+  <div class="flex-1 md:ml-40 p-8">
+    <div class="overflow-x-auto">
+      <div class="flex justify-start my-5">
+        <h1 class="text-3xl font-bold"><%= name %></h1>
+      </div>
+      <div class="flex justify-start rounded-none mb-4 space-x-4">
+        <a href="/admin/user/<%= id %>"
+          id="profile-tab"
+          class="tab-button active px-10 py-2 rounded-lg bg-blue-700 text-white hover:bg-blue-500"
+          onclick="setActiveTab('profile-tab')"
+        >
+          Profile
+        </a>
+        <a href="/admin/user/<%= id %>/blogs"
+          id="blogs-tab"
+          class="tab-button px-10 py-2 rounded-lg bg-blue-700 text-white hover:bg-blue-500"
+          onclick="setActiveTab('blogs-tab')"
+        >
+          Blogs
+        </a>
+        <a href="/admin/user/<%= id %>/forums"
+          id="forums-tab"
+          class="tab-button px-10 py-2 rounded-lg bg-blue-700 text-white hover:bg-blue-500"
+          onclick="setActiveTab('forums-tab')"
+        >
+          Forums
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="flex-1 md:ml-40 p-8">
+  <div class="overflow-x-auto">
+<table class="min-w-full bg-white border rounded-lg shadow-lg">
+    <thead class="bg-blue-100">
+      <tr>
+        <th class="py-2 px-4 text-left text-blue-900 min-w-[220px]">
+          Picture
+        </th>
+        <th class="py-2 px-4 text-left text-blue-900 min-w-[150px]">Title</th>
+        <!--
+       
+        <th class="py-2 px-4 text-left text-blue-900 min-w-[200px]">
+          Description
+        </th>
+         -->
+        <th class="py-2 px-4 text-left text-blue-900 min-w-[20px]">
+          Published
+        </th>
+        <th class="py-2 px-4 text-left text-blue-900 min-w-[20px]">
+          Premium
+        </th>
+        <th class="py-2 px-4 text-left text-blue-900 min-w-[100px]">
+          Action
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (data.length > 0) { %> <% for (let i = 0; i < data.length; i++) {
+      %>
+      <tr class="border border-gray-200">
+        <td class="py-2 px-4 w-24 border border-gray-200 max-w-72">
+          <div class="flex">
+            <img
+              src="<%= data[i]?.dataValues?.banner?.dataValues?.path %>"
+              alt="<%= data[i]?.dataValues?.banner?.dataValues?.originalname %>"
+              class="min-h-46 min-w-46 object-cover rounded"
+            />
+          </div>
+        </td>
+        <td class="py-2 px-4 text-blue-900 border border-gray-200 w-56">
+          <a href="" class="text-ellipsis">
+            <%= data[i].dataValues.title?.slice(0, 180) %>...
+          </a>
+        </td>
+        
+        <td class="py-2 px-4 text-blue-900 border border-gray-200 w-36">
+          <div class="text-ellipsis overflow-hidden">
+            <a
+              href="/admin/user/<%=id %>/blogs?id=<%= data[i].dataValues.id %>&publish=<%= data[i].dataValues.is_published%>"
+              id="published-btn"
+              class="inline-flex items-center px-3 py-1 text-sm font-medium text-white <%= data[i].dataValues.is_published ? 'bg-green-500' : 'bg-red-500' %> rounded"
+              data-id="<%= data[i].dataValues.id %>"
+              data-publish="<%= data[i].dataValues.is_published%>"
+            >
+              <%= data[i].dataValues.is_published ? 'Published' :
+              'Unpublished' %>
+            </a>
+          </div>
+        </td>
+        <td class="py-2 px-4 text-blue-900 border border-gray-200 w-36">
+          <div class="text-ellipsis overflow-hidden">
+            <a
+              href="/admin/user/<%=id %>/blogs?id=<%= data[i].dataValues.id %>&premium=<%= data[i].dataValues.premium%>"
+              id="premium-btn"
+              data-premium="<%= data[i].dataValues.premium%>"
+              class="inline-flex items-center px-3 py-1 text-sm font-medium text-white rounded <%= data[i].dataValues.premium ? 'bg-yellow-500' : 'bg-gray-500' %>"
+            >
+              <%= data[i].dataValues.premium ? 'Premium' : 'Standard' %>
+            </a>
+          </div>
+        </td>
+        <td class="py-2 px-4 space-x-2 border border-gray-200 w-52" >
+          <div class="flex justify-start gap-x-5 max-xl:w-52">
+            <button
+              class="duplicate-btn bg-[#333333] p-2 rounded hover:text-blue-800"
+              data-title="<%= data[i].dataValues.title%>"
+              data-id="<%= data[i].dataValues.id%>"
+            >
+              <img
+                src="/duplicate.svg"
+                class="w-7 h-7"
+                alt="duplicate icon"
+              />
+            </button>
+            <a
+              href="/admin/dashboard/blog/<%= data[i].dataValues.id%>/comments"
+              class=" bg-[#f5f5f5] p-2 rounded relative hover:text-blue-800"
+              data-title="<%= data[i].dataValues.title%>"
+              data-id="<%= data[i].dataValues.id%>"
+            >
+              <img src="/comment.svg" class="w-7 h-7" alt="comment icon" />
+              <!-- Badge for comment count -->
+              <span
+                class="absolute top-0 right-0 bg-red-600 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2"
+              >
+                <%= data[i].dataValues.comments?.length %>
+              </span>
+            </a>
+
+            <a
+              href="/admin/dashboard/blogs/update/<%= data[i].dataValues.id %>"
+              class="bg-blue-500 p-2 rounded hover:text-blue-800"
+            >
+              <img src="/edit.svg" class="w-7 h-7" alt="edit icon" />
+            </a>
+
+            <% if(!data[i].dataValues.is_published) {%>
+            <a
+              href="javascript:void(0);"
+              data-id="<%= data[i].dataValues.id %>"
+              data-title="<%= data[i].dataValues.title%>"
+              class="bg-red-500 p-2 rounded text-red-600 hover:text-red-800 delete-link"
+            >
+              <img src="/delete.svg" class="w-7 h-7" alt="delete icon" />
+            </a>
+            <% } %>
+          </div>
+        </td>
+      </tr>
+      <% } %> <% } %>
+    </tbody>
+  </table>
+  </div>
+  </div>
+
+<!-- Delete Confirmation Popup -->
+<div
+  id="delete-confirmation"
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden"
+>
+  <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+    <h2 class="text-xl font-semibold mb-4">Are you sure?</h2>
+    <p class="text-gray-600 mb-6">
+      Do you really want to delete the blog:
+      <span class="font-bold" id="blog-title">blog</span> ?
+    </p>
+    <div class="flex justify-end gap-4">
+      <button
+        id="cancel-delete"
+        class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+      >
+        Cancel
+      </button>
+      <button
+        id="confirm-delete"
+        class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Change copy of blog -->
+<div
+  id="change-title-modal"
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center hidden"
+>
+  <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+    <h2 class="text-xl font-semibold mb-4">Copy Blog</h2>
+    <p class="text-gray-600 mb-4">Enter The New Title:</p>
+    <input
+      type="text"
+      id="new-blog-title"
+      required
+      minlength="10"
+      class="w-full px-4 py-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="New Blog Title"
+    />
+    <p class="text-red-600 mb-4" id="titleError"></p>
+    <div class="flex justify-end gap-4">
+      <button
+        id="cancel-change-title"
+        class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+      >
+        Cancel
+      </button>
+      <button
+        id="confirm-change-title"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setActiveTab(activeTabId) {
+    const tabs = document.querySelectorAll(".tab-button");
+    tabs.forEach((tab) => {
+      if (tab.id === activeTabId) {
+        tab.classList.add("active");
+        tab.classList.remove("bg-blue-700");
+        tab.classList.add("bg-blue-500");
+      } else {
+        tab.classList.remove("active");
+        tab.classList.add("bg-blue-700");
+        tab.classList.remove("bg-blue-500");
+      }
+    });
+  }
+</script>
+
+<script>
+  const changeTitleModal = document.getElementById("change-title-modal");
+  const newTitle = document.getElementById("new-blog-title");
+  const duplicateBtns = document.querySelectorAll(".duplicate-btn");
+  const titleError = document.getElementById("titleError");
+  const cancelDuplicateBtn = document.getElementById("cancel-change-title");
+  const saveDuplicateBtn = document.getElementById("confirm-change-title");
+
+  let currentId = null; // Initialize a variable to store the current ID
+
+  duplicateBtns.forEach((duplicateBtn) => {
+    duplicateBtn.addEventListener("click", () => {
+      titleError.innerText = "";
+      const currentTitle = duplicateBtn.getAttribute("data-title");
+      currentId = duplicateBtn.getAttribute("data-id"); // Update the current ID
+
+      newTitle.value = `Copy of ${currentTitle}`;
+      changeTitleModal.classList.remove("hidden");
+      changeTitleModal.classList.add("flex");
+    });
+  });
+
+  saveDuplicateBtn.addEventListener("click", async () => {
+    if (newTitle.value.length < 10 || newTitle.value.length > 100) {
+      titleError.innerText = "Title must be between 10 and 100 characters";
+      return;
+    } else if (!currentId) {
+      titleError.innerText =
+        "No blog ID found. Please select a blog to duplicate.";
+      return;
+    }
+
+    changeTitleModal.classList.add("hidden");
+    changeTitleModal.classList.remove("flex");
+    window.location.href = `${
+      window.location.origin
+    }/admin/dashboard/blogs/duplicate/${currentId}?title=${encodeURIComponent(
+      newTitle.value
+    )}`;
+  });
+</script>
+<script>
+  // Delete Confirmation Popup Logic
+  const deleteLinks = document.querySelectorAll(".delete-link");
+  const confirmationPopup = document.getElementById("delete-confirmation");
+  const confirmDeleteBtn = document.getElementById("confirm-delete");
+  const cancelDeleteBtn = document.getElementById("cancel-delete");
+  let deleteUrl = "";
+  let blog = "";
+
+  deleteLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      deleteUrl = link.getAttribute("data-id");
+      blog = link.getAttribute("data-title");
+      console.log(deleteUrl);
+      document.getElementById("blog-title").innerText = blog;
+      confirmationPopup.classList.remove("hidden");
+
+      console.log("yes");
+    });
+  });
+
+  confirmDeleteBtn.addEventListener("click", () => {
+    if (deleteUrl) {
+      window.location.href = `/admin/dashboard/blogs/delete/${deleteUrl}`;
+    }
+  });
+
+  cancelDeleteBtn.addEventListener("click", () => {
+    confirmationPopup.classList.add("hidden");
+  });
+
+  cancelDuplicateBtn.addEventListener("click", () => {
+    changeTitleModal.classList.add("hidden");
+  });
+</script>
+
+<%- include('../wrapper/footer') %>

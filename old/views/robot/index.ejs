@@ -1,0 +1,92 @@
+<%- include('../wrapper/header') %>
+
+<div class="flex h-screen bg-[#f5f5f5] text-gray-600">
+  <!-- Sidebar -->
+  <%- include('../components/sidenav') %>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex ms-[9rem]">
+    <!-- Table Section -->
+    <div class="flex-1 p-8">
+      <div class="flex justify-center">
+        <div class="bg-white p-8 rounded-lg w-full max-w-5xl">
+          <h2 class="text-4xl font-bold mb-6 text-gray-600"><%= title %></h2>
+          <form
+            id="settingsForm"
+            class="max-h-[auto]"
+          >
+            <div class="mb-4 flex flex-col items-start">
+              <label
+                for="content"
+                class="w-full text-gray-600 text-lg key font-semibold"
+                >Content</label
+              >
+              <textarea
+                id="content"
+                name="content"
+                class="w-full h-48 bg-gray-100 rounded px-3 py-2"
+                rows="3"
+              ><%= data %></textarea>
+              <span id="content-error" class="text-red-500 text-sm hidden"
+                >Error message for content</span
+              >
+            </div>
+
+            <div class="flex justify-end">
+              <button
+                type="submit"
+                id="submit-btn"
+                class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showToast(message, isSuccess) {
+    const toast = document.createElement("div");
+    toast.className = `fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${
+      isSuccess ? "bg-green-500" : "bg-red-500"
+    }`;
+    toast.innerText = message;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.remove();
+      if (isSuccess) window.location.href = "/admin/robot";
+    }, 3000);
+  }
+
+  document.getElementById("submit-btn").addEventListener("click", async (e) => {
+    e.preventDefault();
+    const data=document.getElementById("content").value
+
+    try {
+      const response = await fetch(`${window.location.origin}/admin/robot`, {
+        method: "POST",
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body: JSON.stringify({data}),
+      });
+      const result = await response.json();
+      console.log(response.status);
+
+      if (response.status == 200 || response.status == 201) {
+        showToast("Content saved successfully!", true);
+        return;
+      } else {
+        showToast(result?.err, false);
+      }
+    } catch (error) {
+      showToast(error.message, false);
+    }
+  });
+</script>
+
+<%- include('../wrapper/footer') %>

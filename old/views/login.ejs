@@ -1,0 +1,208 @@
+<%- include('wrapper/header') %>
+  <div class="flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md p-6" data-aos="zoom-in" data-aos-duration="2000" data-aos-delay="500">
+      <form id="loginForm" class="bg-[#ffffff] rounded-lg shadow-lg p-8">
+        <div class="flex justify-center mb-2">
+          <img src="/profile.png" alt="User Icon" class="h-28 w-28" />
+        </div>
+
+        <div class="mb-4">
+          <label for="email" class="block text-lg font-medium mb-2">Email</label>
+          <div class="relative">
+            <input type="email" id="email" placeholder="Enter Your Email"
+              class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <img src="/mail.png" class="absolute right-2 top-3 h-5 w-5" alt="mail" />
+          </div>
+
+          <small id="emailError" class="text-red-500 mt-2 hidden">* Wrong Email</small>
+        </div>
+        <div class="mb-6">
+          <label for="password" class="block text-lg font-medium mb-2">Password</label>
+          <div class="relative">
+            <input type="password" id="password" placeholder="Enter Your Password"
+              class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <img src="/lock.png" class="absolute right-1 top-3 h-5 w-5" alt="lock" />
+          </div>
+          <small id="passwordError" class="text-red-500 mt-2 hidden">* Wrong Password</small>
+        </div>
+        <button type="submit"
+          class="w-20 py-2 bg-[#3294de] text-md hover:bg-gray-600 rounded-lg font-semibold text-white">
+          Login
+        </button>
+      </form>
+    </div>
+  </div>
+  <script>
+    // JavaScript to handle error display
+    document
+      .getElementById("loginForm")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent default form submission
+        document.getElementById("emailError").classList.add("hidden");
+        document.getElementById("passwordError").classList.add("hidden");
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const sendData = await fetch(`${window.location.origin}/admin/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
+        const response = await sendData.json();
+
+        console.log(response);
+
+        if (response?.type == "email") {
+          document.getElementById("emailError").innerText = `* ${response.err}`;
+          document.getElementById("emailError").classList.remove("hidden");
+          return;
+        } else if (response?.type == "password") {
+          document.getElementById(
+            "passwordError"
+          ).innerText = `* ${response.err}`;
+          document.getElementById("passwordError").classList.remove("hidden");
+          return;
+        }
+        if (response?.err) {
+          document.getElementById(
+            "passwordError"
+          ).innerText = `* ${response.err}`;
+          document.getElementById("passwordError").classList.remove("hidden");
+          return;
+        }
+        console.log(response);
+        window.location.href = response?.user?.redirect;
+      });
+  </script>
+  <%- include('wrapper/footer') %>
+
+
+    <!-- <%- include('wrapper/header') %>
+  <div class="flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md p-6" data-aos="zoom-in" data-aos-duration="2000" data-aos-delay="500">
+      <form id="loginForm" class="bg-[#ffffff] rounded-lg shadow-lg p-8">
+        <div class="flex justify-center mb-2">
+          <img src="/profile.png" alt="User Icon" class="h-28 w-28" />
+        </div>
+
+        <!-- Email and Password Fields -->
+    <div id="emailPasswordFields" class="mb-4">
+      <label for="email" class="block text-lg font-medium mb-2">Email</label>
+      <div class="relative">
+        <input type="email" id="email" placeholder="Enter Your Email"
+          class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <img src="/mail.png" class="absolute right-2 top-3 h-5 w-5" alt="mail" />
+      </div>
+      <small id="emailError" class="text-red-500 mt-2 hidden">* Wrong Email</small>
+    </div>
+
+    <div class="mb-6">
+      <label for="password" class="block text-lg font-medium mb-2">Password</label>
+      <div class="relative">
+        <input type="password" id="password" placeholder="Enter Your Password"
+          class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <img src="/lock.png" class="absolute right-1 top-3 h-5 w-5" alt="lock" />
+      </div>
+      <small id="passwordError" class="text-red-500 mt-2 hidden">* Wrong Password</small>
+    </div>
+
+    <!-- OTP Verification -->
+    <div id="otpField" class="mb-4 hidden">
+      <label for="otp" class="block text-lg font-medium mb-2">OTP</label>
+      <input type="text" id="otp" placeholder="Enter OTP"
+        class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <small id="otpError" class="text-red-500 mt-2 hidden">* Invalid OTP</small>
+    </div>
+
+    <button id="submitBtn" type="submit"
+      class="w-full py-2 bg-[#3294de] text-md hover:bg-gray-600 rounded-lg font-semibold text-white">
+      Login
+    </button>
+    </form>
+    </div>
+    </div>
+
+    <script>
+      document.getElementById("loginForm").addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent default form submission
+        document.getElementById("emailError").classList.add("hidden");
+        document.getElementById("passwordError").classList.add("hidden");
+        document.getElementById("otpError").classList.add("hidden");
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const otp = document.getElementById("otp").value;
+
+        // Check if we are submitting the OTP form
+        const isOtpForm = document.getElementById("otpField").classList.contains("hidden") === false;
+
+        // Disable submit button during the request to prevent multiple submissions
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = "Loading...";
+
+        try {
+          if (isOtpForm) {
+            // Step 2: Verify OTP
+            const sendData = await fetch(`${window.location.origin}/admin/verifyOtp`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ email, otp }),
+            });
+            const response = await sendData.json();
+
+            if (response.err) {
+              document.getElementById("otpError").innerText = `* ${response.err}`;
+              document.getElementById("otpError").classList.remove("hidden");
+              document.getElementById("otp").value = ""; // Clear OTP field
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = "Verify OTP";
+              return;
+            }
+
+            // Redirect to the success page after OTP verification
+            window.location.href = response.user.redirect;
+          } else {
+            // Step 1: Send OTP (Login with Email and Password)
+            const sendData = await fetch(`${window.location.origin}/admin/login`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ email, password }),
+            });
+            const response = await sendData.json();
+
+            if (response.err) {
+              if (response.err === "Invalid Email") {
+                document.getElementById("emailError").innerText = `* ${response.err}`;
+                document.getElementById("emailError").classList.remove("hidden");
+              } else if (response.err === "Wrong Password") {
+                document.getElementById("passwordError").innerText = `* ${response.err}`;
+                document.getElementById("passwordError").classList.remove("hidden");
+              }
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = "Login";
+              return;
+            }
+
+            // Show OTP input field and hide email/password fields
+            document.getElementById("emailPasswordFields").classList.add("hidden");
+            document.getElementById("otpField").classList.remove("hidden");
+            document.getElementById("submitBtn").innerText = "Verify OTP"; // Change button text to "Verify OTP"
+            submitBtn.disabled = false; // Enable submit button
+          }
+        } catch (error) {
+          document.getElementById("otpError").innerText = "* An error occurred, please try again.";
+          document.getElementById("otpError").classList.remove("hidden");
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = "Login"; // or "Verify OTP"
+        }
+      });
+    </script>
+
+    <%- include('wrapper/footer') %> -->

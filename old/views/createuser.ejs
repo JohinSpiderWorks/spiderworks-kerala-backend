@@ -1,0 +1,304 @@
+<%- include('wrapper/header') %> <%- include('wrapper/footer') %> <%-
+include('wrapper/header') %>
+<div class="flex">
+  <%- include('components/sidenav') %>
+
+  <!-- Responsive Sidebar Button -->
+  <div class="md:hidden p-4">
+    <button id="menu-btn" class="text-blue-900 focus:outline-none">
+      <svg
+        id="hamburger-icon"
+        class="w-8 h-8"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        ></path>
+      </svg>
+      <svg
+        id="close-icon"
+        class="w-8 h-8 hidden"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Main Content (Table) -->
+  <div class="flex-1 md:ml-40 p-8">
+    <div class="overflow-x-auto">
+      <div class="flex justify-start my-5">
+        <h1 class="text-3xl font-bold"><%= title %></h1>
+      </div>
+      <div class="flex items-center justify-center">
+        <div
+          class="w-full max-w-xl p-6 max-sm:w-full max-sm:p-0"
+          data-aos="zoom-in"
+          data-aos-duration="2000"
+          data-aos-delay="500"
+        >
+          <form id="signupForm" class="bg-[#ffffff] rounded-lg h-auto shadow-lg p-8">
+            <div class="flex justify-center mb-2">
+              <img src="/profile.png" alt="User Icon" class="h-28 w-28" />
+            </div>
+            <div class="mb-4 flex flex-col md:flex-row md:space-x-4">
+              <!-- Name Field -->
+              <div class="mb-4 flex-1">
+                <label for="name" class="block text-lg font-medium mb-2"
+                  >Name</label
+                >
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter Name"
+                    required
+                    class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <img
+                    src="/user.png"
+                    class="absolute right-2 top-3 h-5 w-5"
+                    alt="user"
+                  />
+                </div>
+              </div>
+
+              <!-- Email Field -->
+              <div class="mb-4 flex-1">
+                <label for="email" class="block text-lg font-medium mb-2"
+                  >Email</label
+                >
+                <div class="relative">
+                  <input
+                    type="email"
+                    id="email"
+                    required
+                    placeholder="Enter Email"
+                    class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <img
+                    src="/mail.png"
+                    class="absolute right-2 top-3 h-5 w-5"
+                    alt="mail"
+                  />
+                </div>
+                <small id="emailError" class="text-red-500 mt-2 hidden">
+                  * Wrong Email
+                </small>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="password" class="block text-lg font-medium mb-2"
+                >Password</label
+              >
+              <div class="relative">
+                <input
+                  type="password"
+                  id="password"
+                  required
+                  placeholder="Enter Password"
+                  class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <img
+                  src="/lock.png"
+                  class="absolute right-2 top-3 h-5 w-5"
+                  alt="lock"
+                />
+              </div>
+              <small id="passwordError" class="text-red-500 mt-2 hidden">
+                * Password Error
+              </small>
+            </div>
+
+            <!-- Phone and Role Fields -->
+            <div class="mb-4 flex flex-col md:flex-row md:space-x-4">
+              <!-- Phone Number Field -->
+              <div class="flex-1 mb-4 md:mb-0">
+                <label for="phone" class="block text-lg font-medium mb-2"
+                  >Phone Number</label
+                >
+                <div class="relative">
+                  <input
+                    type="tel"
+                    id="phone"
+                    placeholder="Enter Phone Number"
+                    class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <img
+                    src="/phone.png"
+                    class="absolute right-2 top-3 h-5 w-5"
+                    alt="phone"
+                  />
+                </div>
+                <small id="phoneError" class="text-red-500 mt-2 hidden">
+                  * Phone Error
+                </small>
+              </div>
+
+              <!-- Role Dropdown -->
+              <div class="flex-1">
+                <label for="role" class="block text-lg font-medium mb-2"
+                  >Role</label
+                >
+                <select
+                  id="role"
+                  required
+                  class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="" disabled>Select Your Role</option>
+                  <option value="user">User</option>
+                  <option value="editor">Editor</option>
+                  <option value="author">Author</option>
+                  <option value="seo">SEO</option>
+                  <option value="member">Member</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Bio Textarea -->
+            <div class="mb-4">
+              <label for="bio" class="block text-lg font-medium mb-2"
+                >Bio</label
+              >
+              <textarea
+                id="bio"
+                rows="4"
+                placeholder="Tell us about yourself"
+                class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              ></textarea>
+              <small id="bioError" class="text-red-500 mt-2 hidden">
+                * Bio Error
+              </small>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="w-full py-2 bg-[#3294de] text-md hover:bg-[#2178c0] rounded-lg font-semibold text-white"
+            >
+              Create Account
+            </button>
+          </form>
+          <div
+            id="alertMessage"
+            class="mt-5 p-4 bg-green-500 text-white text-center rounded-md text-lg absolute bottom-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2"
+            style="display: none"
+          >
+            Form submitted successfully!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // JavaScript to handle error display
+  document
+    .getElementById("signupForm")
+    .addEventListener("submit", async function (event) {
+      event.preventDefault(); // Prevent default form submission
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+      const bio = document.getElementById("bio").value;
+      const phone = document.getElementById("phone").value;
+
+      const sendData = await fetch(
+        `${window.location.origin}/admin/users/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, email, password, role, bio, phone }),
+        }
+      );
+      const response = await sendData.json();
+
+      if (sendData?.ok) {
+        document.getElementById("emailError").classList.add("hidden");
+        document.getElementById("passwordError").classList.add("hidden");
+        document.getElementById("phoneError").classList.add("hidden");
+
+        const alertMessage = document.getElementById("alertMessage");
+        alertMessage.innerText = response.msg;
+        alertMessage.style.display = "block";
+
+        // Hide the alert after 3 seconds
+        setTimeout(() => {
+          alertMessage.style.display = "none";
+          window.location.href = "/admin/dashboard";
+        }, 2000);
+      }
+
+      if (response?.type == "email") {
+        document.getElementById("emailError").innerText = `* ${response.err}`;
+        document.getElementById("emailError").classList.remove("hidden");
+        document.getElementById("passwordError").classList.add("hidden");
+        return;
+      } else if (response?.type == "password") {
+        document.getElementById(
+          "passwordError"
+        ).innerText = `* ${response.err}`;
+        document.getElementById("emailError").classList.add("hidden");
+        document.getElementById("passwordError").classList.remove("hidden");
+        return;
+      } else if (response?.type == "phone") {
+        document.getElementById("phoneError").innerText = `* ${response.err}`;
+        document.getElementById("emailError").classList.add("hidden");
+        document.getElementById("passwordError").classList.add("hidden");
+        document.getElementById("phoneError").classList.remove("hidden");
+        return;
+      }
+      if (response?.err) {
+        document.getElementById("bioError").innerText = `* ${response.err}`;
+        document.getElementById("emailError").classList.add("hidden");
+        document.getElementById("passwordError").classList.add("hidden");
+        document.getElementById("bioError").classList.remove("hidden");
+        return;
+      }
+    });
+</script>
+<script>
+  const menuBtn = document.getElementById("menu-btn");
+  const sidebar = document.getElementById("sidebar");
+  const hamburgerIcon = document.getElementById("hamburger-icon");
+  const closeIcon = document.getElementById("close-icon");
+
+  menuBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    sidebar.classList.toggle("-translate-x-full");
+    hamburgerIcon.classList.toggle("hidden");
+    closeIcon.classList.toggle("hidden");
+  });
+
+  document.addEventListener("click", (event) => {
+    if (
+      !sidebar.contains(event.target) &&
+      !menuBtn.contains(event.target) &&
+      !sidebar.classList.contains("-translate-x-full")
+    ) {
+      sidebar.classList.add("-translate-x-full");
+      hamburgerIcon.classList.remove("hidden");
+      closeIcon.classList.add("hidden");
+    }
+  });
+</script>
+<%- include('wrapper/footer') %>

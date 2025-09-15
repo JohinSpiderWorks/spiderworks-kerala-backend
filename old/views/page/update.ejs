@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet"> -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <link rel="stylesheet" href="/index.css" />
+    <link rel="stylesheet" href="/createblog.css" />
+    <link rel="stylesheet" href="/styles/sidenav.css">
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <%- include('../components/sidenav') %>
+      <main>
+        <button id="toggle-button">
+          <svg
+            id="hamburger-icon"
+            style="
+              width: 1.5rem;
+              height: 1.5rem;
+              min-width: 10px;
+              min-height: 10px;
+            "
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            ></path>
+          </svg>
+          <svg
+            id="close-icon"
+            style="
+              width: 1.5rem;
+              height: 1.5rem;
+              min-width: 640px;
+              min-height: 640px;
+              display: none;
+            "
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+        <div class="main-title" style="display: flex">
+          <h1><%= title %></h1>
+        </div>
+        <form action="" class="form-container">
+          <div class="form-group">
+            <label for="title" class="form-label">Page Name</label>
+            <input
+              type="text"
+              name="pagename"
+              id="pagename"
+              readonly
+              required
+              value="<%= data.page_name %>"
+              class="form-input"
+              placeholder="Enter pageName"
+            />
+            <small id="pagenameError"> * Page Name </small>
+          </div>
+          
+          <div class="form-group">
+            <label for="title" class="form-label">Title</label>
+            <input
+              type="text"
+              name="title"
+              id="title"
+              required
+              value="<%= data.title %>"
+              class="form-input"
+              placeholder="Enter title"
+            />
+            <small id="titleError"> * Title </small>
+          </div>
+
+          <div class="form-group">
+            <label for="content" class="form-label">Short Description</label>
+            <input type="hidden" name="id" id="id" value="<%= data.id %>" />
+            <textarea
+              id="shortdescription"
+              class="form-textarea"
+              required
+              placeholder="Meta Description"
+            >
+<%= data.short_description %></textarea
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="content" class="form-label">Top Description</label>
+            <textarea required class="form-textarea top_description_summernote">
+<%= data.top_description %></textarea
+            >
+            <small id="contentError"> * Content </small>
+          </div>
+
+          <div class="form-group">
+            <label for="content" class="form-label">Sections</label>
+            <div class="section-container" id="formSections">
+              <% if (data.sections && data.sections.length > 0) { %> <% for (let
+              i = 0; i < data.sections.length; i++) { %>
+              <div class="section-item">
+                <div class="header">
+                  <% if(i!=0){%>
+                  <button type="button" class="swap-btn swapTop">
+                  
+                    <img
+                      src="/swapup.svg"
+                      width="30"
+                      height="30"
+                      alt="swap top"
+                    />
+                  </button>
+                  <%}%>
+                  <button type="button" class="add-btn addSection">
+                    <img src="/add.png" width="30" height="30" alt="add" />
+                  </button>
+                  <% if(i!=0){%>
+
+                  <button type="button" id="" class="delete-btn deleteSection">
+                    <img
+                      src="/delete.svg"
+                      width="30"
+                      height="30"
+                      alt="delete"
+                    />
+                  </button>
+
+                  <%}%>
+                  <% if(i!=0){%>
+                  <button type="button" class="swap-btn swapBottom">
+                    <img
+                      src="/swapdown.svg"
+                      width="30"
+                      height="30"
+                      alt="swap bottom"
+                    />
+                  </button>
+                  <%}%>
+                </div>
+                <div
+                  class="section"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                    width: 100%;
+                  "
+                >
+                  <input
+                    type="text"
+                    name="heading"
+                    value="<%= data.sections[i].dataValues.heading %>"
+                    class="form-input"
+                    placeholder="Title"
+                  />
+                  <textarea
+                    name="content"
+                    class="form-textarea summernote-section"
+                    placeholder="Message"
+                  >
+<%= data.sections[i].dataValues.content %></textarea
+                  >
+                </div>
+              </div>
+              <% } %> <% } %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="content" class="form-label">Bottom Description</label>
+            <textarea
+              id="summernote"
+              required
+              class="form-textarea bottom_description_summernote"
+            >
+<%= data.bottom_description %></textarea>
+            <small id="contentError"> * Content </small>
+          </div>
+
+          <div class="form-action">
+            <div style="display: flex; align-items: center">
+              <input type="checkbox" id="is_published" <%= data.is_published ?
+              'checked': '' %> class="styled-checkbox" />
+              <label for="is_published" class="checkbox-label">Publish</label>
+            </div>
+            <div style="display: flex; align-items: center">
+              <input
+                type="checkbox"
+                id="is_dynamic"<%= data.is_dynamic ?
+                'checked': '' %>
+                class="styled-checkbox"
+              />
+              <label for="is_published" class="checkbox-label">Dynamic</label>
+            </div>
+            <button type="button" id="submitbtn" class="form-button">
+              Update
+            </button>
+          </div>
+          <div
+            id="alertMessage"
+            class="alert-message"
+            style="display: none; background-color: rgb(31, 103, 237)"
+          >
+            Page Updated Successfully!
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="delete-confirmation-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Are you sure?</h2>
+        <p>Do you really want to delete this section?</p>
+        <div class="modal-actions">
+          <button id="cancel-delete" class="btn-cancel">Cancel</button>
+          <button id="confirm-delete" class="btn-delete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script src="/javascript/page/updatepage.js"></script>
+  </body>
+</html>
